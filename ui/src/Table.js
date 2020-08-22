@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -14,8 +15,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
-import { getReq } from './Apicaller'
+import { getReq, deleteReq } from './Apicaller'
 
 const Ttable = (props) => {
 
@@ -26,16 +28,23 @@ const Ttable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loadingStatus, setLoadingStatus] = useState(true)
   const [tableData, setTableData] = useState([]);
+  const [forceDeleteRerender, setForceDeleteRerender] = useState(false);
 
  useEffect(() => {
     
     const fetchAPI = async() => {
         const tableData  = await getReq(props.searchItem);
+        console.log(tableData);
+        if(!tableData){
+            ReactDOM.render(<>Table Data Not Found</>, document.getElementById("tableTitle"));
+        }
         setTableData(tableData);
         setLoadingStatus(false);
+        setPage(0);
+        setForceDeleteRerender(false);
     }
   fetchAPI();
-  }, [props.searchItem]);
+  }, [props.searchItem || forceDeleteRerender]);
 
   function createData(id, title, description, dateAdded) {
     return { id, title, description, dateAdded};
@@ -196,8 +205,12 @@ const Ttable = (props) => {
     setPage(0);
   };
   
-  const deleteCell = (id) => {
-    console.log(id);
+  const deleteCell = async (id) => {
+    if(!id){
+        id = "all";
+    }
+    await deleteReq(id);
+    setForceDeleteRerender(true);
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

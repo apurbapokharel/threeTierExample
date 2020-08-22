@@ -29,15 +29,30 @@ export const getReq = async (searchItem) => {
     try {
         const res = await axios.get(changeableUrl);
         console.log(res.data);
+        console.log(res);
+        console.log(res.data.length);
         if(res.data.length){
             return(res.data);
-        }else{
-            return([res.data]);
         }
-            
+        else{
+            return([res.data]);
+        }   
     } catch (error) {
         console.log(error);
-        // return error;
-        return false;
+        return error;
   }
 };
+
+export const deleteReq = async (id) => {
+    console.log(id);
+    var changeableUrl = `${url}/delete/${id}`;
+    try {
+        const res = await axios.delete(changeableUrl);
+        console.log(res.data);
+        return(res.data);
+
+    } catch (error) {
+        console.log(error);
+        return error;
+  }
+} 
