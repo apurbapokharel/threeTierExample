@@ -39,7 +39,7 @@ export default function Create() {
   const [expanded, setExpanded] = React.useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  // const [status, setStatus] = useState();
+
   useEffect(() => {
     
   }, []);
@@ -51,48 +51,19 @@ export default function Create() {
     for(i=0; i<2; i++){
         data.push({"title":randomWords().toString(), "description":randomWords().toString()});
     }
-    var status = await postReq(data);
-    // setStatus(status);
-    // var promise = new Promise(function (resolve, reject){
-    //   var status = postReq(data);
-    //   if (status==true){
-    //     resolve(
-    //       ReactDOM.render(<>success</>, document.getElementById("postStatus"))
-    //     )
-    //   }else{
-    //     reject(
-    //       ReactDOM.render(<>failed</>, document.getElementById("postStatus"))
-    //     )
-    //   }
-    // });
-    // promise.then(
-    //   result => ReactDOM.render(<>success</>, document.getElementById("postStatus")),
-    //   error => ReactDOM.render(<>failed</>, document.getElementById("postStatus"))
-    // );
-
-    // handleStatusDisplay(status);
+    postReq(data)
+    .then(() => ReactDOM.render(<>success</>, document.getElementById("postStatus")))
+    .catch(error => ReactDOM.render(<>failed</>, document.getElementById("postStatus")));
 };
 
   const postForm = (title, description) => {
     var data=[{"title":title, "description":description}];
     setTitle('');
     setDescription('');
-    // postReq(data).then((status) => {
-    //   handleStatusDisplay(status)
-    // });
-    return (postReq(data));
+    postReq(data)
+    .then(() => ReactDOM.render(<>success</>, document.getElementById("postStatus")))
+    .catch(error => ReactDOM.render(<>failed</>, document.getElementById("postStatus")));
   };
-
-  // const handleStatusDisplay = (status) => {
-  //   if(status){
-  //     console.log(status);
-  //     ReactDOM.render(<>success</>, document.getElementById("postStatus"));
-  //   }
-  //   else{
-  //     console.log(status);
-  //     ReactDOM.render(<>failed</>, document.getElementById("postStatus"));
-  //   }
-  // };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -100,38 +71,7 @@ export default function Create() {
 
   return (
     <Card className={classes.root}>
-      {/* <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      /> */}
-      {/* <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
-      /> */}
-      {/* <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
-        </Typography>
-      </CardContent> */}
       <CardActions disableSpacing>
-        {/* <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton> */}
-        {/* <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton> */}
         CREATE
         <IconButton
           className={clsx(classes.expand, {
@@ -146,7 +86,7 @@ export default function Create() {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {/* {status ? <span id="postStatus">SUCCESS</span> : <span id="postStatus">FAILED</span> } */}
+          <p id="postStatus"></p>
         </CardContent>
         <CardContent>
             <Button variant="contained" startIcon={<CloudUploadIcon />} onClick={generateRandom}>Random Upload</Button>

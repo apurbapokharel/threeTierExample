@@ -15,9 +15,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-
-import { getReq, deleteReq } from './Apicaller'
+import EditIcon from '@material-ui/icons/Edit';
+import { getReq, deleteReq } from './Apicaller';
+import Modal from './Modal';
 
 const Ttable = (props) => {
 
@@ -28,23 +28,26 @@ const Ttable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loadingStatus, setLoadingStatus] = useState(true)
   const [tableData, setTableData] = useState([]);
-  const [forceDeleteRerender, setForceDeleteRerender] = useState(false);
+  const [forceRerender, setForceRerender] = useState(false);
 
  useEffect(() => {
     
     const fetchAPI = async() => {
-        const tableData  = await getReq(props.searchItem);
-        console.log(tableData);
-        if(!tableData){
-            ReactDOM.render(<>Table Data Not Found</>, document.getElementById("tableTitle"));
-        }
-        setTableData(tableData);
+        await getReq(props.searchItem)
+        .then((value) => {
+          setTableData(value);
+        })
+        .catch(() => {
+          console.log("error");
+          setTableData([]);
+          ReactDOM.render(<>Table Data Not Found</>, document.getElementById("tableTitle"));
+        })
         setLoadingStatus(false);
         setPage(0);
-        setForceDeleteRerender(false);
+        setForceRerender(false);
     }
   fetchAPI();
-  }, [props.searchItem || forceDeleteRerender]);
+  }, [props.searchItem || forceRerender]);
 
   function createData(id, title, description, dateAdded) {
     return { id, title, description, dateAdded};
@@ -91,6 +94,11 @@ const Ttable = (props) => {
 
   if(props.deleteRow == 1){
     headCells.push({ id: 'delete', numeric: false, disablePadding: true, label: 'Delete' },
+    )
+  }
+
+  if(props.updateRow == 1){
+    headCells.push({ id: 'update', numeric: false, disablePadding: true, label: 'Update' },
     )
   }
 
@@ -206,11 +214,18 @@ const Ttable = (props) => {
   };
   
   const deleteCell = async (id) => {
-    if(!id){
-        id = "all";
-    }
     await deleteReq(id);
-    setForceDeleteRerender(true);
+    setForceRerender(true);
+  };
+
+  const updateRow = async (id, title, description) => {
+    // const renderModal = async (id = id) => {
+    //   ReactDOM.render(<Modal id={id} defaultTitle={title} defaultDescription={description} />, document.getElementById("modal"));
+    // }
+    // await renderModal();
+    ReactDOM.render(<Modal id={id} defaultTitle={title} defaultDescription={description} />, document.getElementById("modal"));
+    // ReactDOM.unmountComponentAtNode(document.getElementById("modal"));
+    setForceRerender(true);
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -218,6 +233,7 @@ const Ttable = (props) => {
 
   return (
     <div className={classes.root}>
+      <div id="modal"></div>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar />
         <TableContainer>
@@ -251,6 +267,7 @@ const Ttable = (props) => {
                         {/* //ES5 of doing this */}
                         {/* {props.deleteRow == 1 ? <TableCell onClick={deleteCell.bind(this, row.id)}>{<DeleteIcon />}</TableCell>: null}  */}
                         {props.deleteRow == 1 ? <TableCell onClick={() => {deleteCell(row.id)}}>{<DeleteIcon />}</TableCell>: null}
+                        {props.updateRow == 1 ? <TableCell onClick={() => {updateRow(row.id, row.title, row.description)}}>{<EditIcon />}</TableCell>: null}
                       </TableRow>
                     );                  
                   })}

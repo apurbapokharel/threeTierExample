@@ -19,7 +19,8 @@ router.get('/:postId', async(req,res) => {
         const post =  await Post.findById(req.params.postId);
         res.json(post);
     } catch (error) {
-        res.json({message: error})
+        // res.json({message: false});
+        res.json(null); 
     }
     
 });
