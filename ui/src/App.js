@@ -1,39 +1,19 @@
 import React from 'react';
-import Create from './Create';
-import Read from './Read';
-import Update from './Update';
-import Delete from './Delete';
-import './App.css';
+import Login from './Login';
+import Crud from './Crud';
+import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
-        <p>CRUD Demonstration</p>
-        <br/>
-        <div className="Crud">
-          <Create/>
-          <br/>
-          <Read/>
-          <br/>
-          <Update/>
-          <br/>
-          <Delete/>
+    <Router>
+        <div className="App">
+          <Switch>
+            <Route path="/" exact component={Login}/>
+            <Route path="/crud" component={Crud}/>
+          </Switch>  
         </div>
-      </header>
-    </div>
+      </Router>
 
   );
 }

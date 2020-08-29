@@ -1,5 +1,4 @@
 import axios from 'axios';
-import bodyparser from 'body-parser';
 
 const url  = "http://localhost:3000"
 
@@ -24,21 +23,6 @@ export const getReq = async (searchItem) => {
     if(searchItem){
         changeableUrl = `${changeableUrl}/${searchItem}`;
     }
-//     try {
-//         const res = await axios.get(changeableUrl);
-//         console.log("res data", res.data);
-//         console.log("res", res);
-//         console.log("length", res.data.length);
-//         if(res.data.length){
-//             return(res.data);
-//         }
-//         else{
-//             return([res.data]);
-//         }   
-//     } catch (error) {
-//         console.log(error);
-//         return error;
-//   }
     return new Promise(async (resolve, reject) => {
         const res = await axios.get(changeableUrl);
         console.log(res);
@@ -80,4 +64,38 @@ export const patchReq = async (id, body) =>{
         console.log(error);
         return error;
   }
+};
+
+export const loginReq = async (data) =>{
+    console.log(data);
+    var changeableUrl = `${url}/login`;
+    return new Promise(async (resolve, reject) => {
+        const res = await axios.post(changeableUrl, data);
+        console.log(res);
+        if(res.data == true){
+            console.log('success');
+            resolve( 'Success');
+            
+        }else{
+            console.log("reject");
+            reject( 'Cannot perform post requset');
+        }
+    });
+};
+
+export const registerReq = async (data) =>{
+    console.log(data);
+    var changeableUrl = `${url}/register`;
+    return new Promise(async (resolve, reject) => {
+        const res = await axios.post(changeableUrl, data);
+        console.log(res);
+        if(res.data == true){
+            console.log('success');
+            resolve( 'Success');
+            
+        }else{
+            console.log("reject");
+            reject( 'Cannot perform post requset');
+        }
+    });
 };
