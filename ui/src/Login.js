@@ -6,14 +6,18 @@ import { loginReq, registerReq } from './Apicaller';
 import { useHistory } from "react-router-dom";
 import './Login.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleStatus } from './action/index';
 
 function Login() {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-  
+    const loggedStatus = useSelector(state => state.loggedStatus);
+    const dispatch = useDispatch();
+
     useEffect(() => {
-      
+        console.log(loggedStatus);
     }, []);
 
     const registerUser = () => {
@@ -30,7 +34,15 @@ function Login() {
             <form   onSubmit={(event) => {
             event.preventDefault();
             loginReq({"username": username, "password": password})
-            .then(() => {history.push('/crud')})
+            .then(() => {
+                try {
+                    dispatch(toggleStatus());
+
+                } catch (error) {
+                    console.log("erroe insde then");
+                }
+                history.push('/crud')
+            })
             .catch(() => {ReactDOM.render(<>Invalid Credentials</>, document.getElementById("status"))});
 
         }}>
