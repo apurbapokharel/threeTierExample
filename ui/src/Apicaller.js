@@ -53,7 +53,7 @@ export const deleteReq = async (id) => {
   }
 };
 
-export const patchReq = async (id, body) =>{
+export const patchReq = async (id, body) => {
     var changeableUrl = `${url}/patch/${id}`;
     try {
         const res = await axios.patch(changeableUrl, body);
@@ -66,9 +66,26 @@ export const patchReq = async (id, body) =>{
   }
 };
 
-export const loginReq = async (data) =>{
+export const loginReq = (data) => {
     console.log(data);
     var changeableUrl = `${url}/login`;
+    return new Promise(async (resolve, reject) => {
+        const res = await axios.post(changeableUrl, data);
+        console.log(res);
+        if(res.data == true){
+            console.log('success');
+            resolve({token: res.headers.token});
+            
+        }else{
+            console.log("reject");
+            reject( 'Cannot perform post requset');
+        }
+    });
+};
+
+export const registerReq = (data) => {
+    console.log(data);
+    var changeableUrl = `${url}/register`;
     return new Promise(async (resolve, reject) => {
         const res = await axios.post(changeableUrl, data);
         console.log(res);
@@ -83,19 +100,19 @@ export const loginReq = async (data) =>{
     });
 };
 
-export const registerReq = async (data) =>{
-    console.log(data);
-    var changeableUrl = `${url}/register`;
+export const validateToken = (token) => {
+    console.log(token);  
+    var changeableUrl = `${url}/checkValidation`
     return new Promise(async (resolve, reject) => {
-        const res = await axios.post(changeableUrl, data);
+        const res = await axios.post(changeableUrl, token);
         console.log(res);
-        if(res.data == true){
-            console.log('success');
-            resolve( 'Success');
-            
+        if(res.data == "Invalid or Expired Token"){
+            reject("Invalid or Expired Token");
+        }
+        else if(res.data == "Access Denied"){
+            reject("Access Denied");
         }else{
-            console.log("reject");
-            reject( 'Cannot perform post requset');
+            resolve({isadmin: res.data.isadmin});
         }
     });
 };

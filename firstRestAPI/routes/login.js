@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../modals/User');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 router.post('/', async(req,res) => {
     //checkusername exists
@@ -13,8 +14,14 @@ router.post('/', async(req,res) => {
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if(! validPassword){
         return res.json(false);
-    }  
-    res.json(true);
+    }
+    //c8 jwt
+    const token = jwt.sign(
+        { id: user.id, isAdmin: user.isAdmin },
+        process.env.tokenPassword,
+        { expiresIn: 1 * 10 },
+    );
+    res.header('token', token).json(true);
 });
 
 

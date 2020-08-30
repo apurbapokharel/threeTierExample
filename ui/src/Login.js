@@ -5,9 +5,8 @@ import Button from '@material-ui/core/Button';
 import { loginReq, registerReq } from './Apicaller';
 import { useHistory } from "react-router-dom";
 import './Login.css';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleStatus } from './action/index';
+import { toggleStatus, assignToken } from './action/index';
 
 function Login() {
     const history = useHistory();
@@ -34,12 +33,13 @@ function Login() {
             <form   onSubmit={(event) => {
             event.preventDefault();
             loginReq({"username": username, "password": password})
-            .then(() => {
+            .then((token) => {
                 try {
                     dispatch(toggleStatus());
+                    dispatch(assignToken(token));
 
                 } catch (error) {
-                    console.log("erroe insde then");
+                    console.log(error);
                 }
                 history.push('/crud')
             })
