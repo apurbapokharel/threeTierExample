@@ -17,6 +17,8 @@ import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { getReq, deleteReq } from './Apicaller';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeRenderer } from './action/index';
 import Modal from './Modal';
 
 const Ttable = (props) => {
@@ -28,6 +30,9 @@ const Ttable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loadingStatus, setLoadingStatus] = useState(true)
   const [tableData, setTableData] = useState([]);
+  // const reduxForceRerender = useSelector(state => state.forceRerender);
+  // const [forceRerender, setForceRerender] = useState(reduxForceRerender);
+  // const dispatch = useDispatch();
   const [forceRerender, setForceRerender] = useState(false);
 
  useEffect(() => {
@@ -48,6 +53,13 @@ const Ttable = (props) => {
     }
   fetchAPI();
   }, [props.searchItem || forceRerender]);
+
+  // useEffect(() => store.subscribe(() => {
+  //   const jsonValue = store.getState().jsonVal.jsonVal
+  //   setJsonVal(jsonValue)
+  //   })
+  //  , [store]); 
+  //need to find a way to use redux state chages to trigger useeffect!
 
   function createData(id, title, description, dateAdded) {
     return { id, title, description, dateAdded};
@@ -216,16 +228,11 @@ const Ttable = (props) => {
   const deleteCell = async (id) => {
     await deleteReq(id);
     setForceRerender(true);
+    // dispatch(changeRenderer());
   };
 
   const updateRow = async (id, title, description) => {
-    // const renderModal = async (id = id) => {
-    //   ReactDOM.render(<Modal id={id} defaultTitle={title} defaultDescription={description} />, document.getElementById("modal"));
-    // }
-    // await renderModal();
     ReactDOM.render(<Modal id={id} defaultTitle={title} defaultDescription={description} />, document.getElementById("modal"));
-    // ReactDOM.unmountComponentAtNode(document.getElementById("modal"));
-    setForceRerender(true);
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

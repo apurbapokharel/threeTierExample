@@ -3,42 +3,38 @@ import Create from './Create';
 import Read from './Read';
 import Update from './Update';
 import Delete from './Delete';
+import MakeAdmin from './MakeAdmin';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import './Crud.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleStatus, clearToken } from './action/index';
+import { toggleStatus, clearToken, adminStatus } from './action/index';
 import { validateToken } from './Apicaller';
 
 function Crud() {
   const history = useHistory();
   const loggedStatus = useSelector(state => state.loggedStatus);
   const token = useSelector(state => state.token);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isTokenExpired, setIsTokenExpired] = useState(false);
-  // console.log(token, isAdmin);
-
-  useEffect(() => {
-    if(!isTokenExpired){
-      setInterval(() => {
-        validateToken(token)
-          .then((isAdmin) => {
-            setIsAdmin(isAdmin);
-          }).
-          catch(() => {
-            logout();
-          })
-      },2000);
-    }
-}, []);
-
+  const isAdmin = useSelector(state => state.adminStatus);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     validateToken(token)
+    //       .catch(() => {
+    //         clearInterval(interval);
+    //         logout();
+    //       })
+    //   },2000);
+    // setIsAdmin(false);
+}, []);
+
+
   const logout = () => {
-    setIsTokenExpired(true);
-    setIsAdmin(false);
+    console.log("logout called");
     dispatch(toggleStatus());
     dispatch(clearToken());
+    dispatch(adminStatus(false));
     history.push('/');
   }
 
@@ -50,16 +46,31 @@ function Crud() {
       :
         <header className="App-header">
         <p>CRUD Demonstration</p>
-        <Button onClick={logout}>Logout</Button>
+        <Button onClick={logout}><p className="Logoff">Logout</p></Button>
         <br/>
         <div className="Crud">
-          <Create/>
-          <br/>
-          <Read/>
-          <br/>
-          <Update/>
-          <br/>
-          <Delete/>
+          {isAdmin? console.log("ture") : console.log("falsae")}
+          {
+            isAdmin ?
+            <>
+              <Create/>
+              <br/>
+              <Read/>
+              <br/>
+              <Update/>
+              <br/>
+              <Delete/>
+              <br/>
+              <MakeAdmin/>
+            </>
+            :
+            <>
+              <Read/>
+              <br/>
+              <Delete/>
+         </>
+          }
+          
         </div>
         </header>
       }

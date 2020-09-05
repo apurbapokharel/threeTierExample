@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { TextField, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { loginReq, registerReq } from './Apicaller';
+import { loginReq, registerReq, checkAdmin } from './Apicaller';
 import { useHistory } from "react-router-dom";
 import './Login.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleStatus, assignToken } from './action/index';
+import { toggleStatus, assignToken, adminStatus } from './action/index';
 
 function Login() {
     const history = useHistory();
@@ -34,6 +34,11 @@ function Login() {
             event.preventDefault();
             loginReq({"username": username, "password": password})
             .then((token) => {
+                checkAdmin(token).
+                then((isAdmin) => {
+                  dispatch(adminStatus(isAdmin));
+                })
+                .catch();
                 try {
                     dispatch(toggleStatus());
                     dispatch(assignToken(token));

@@ -21,3 +21,16 @@ export const toggleStatus = () => {
       type: "SIGN_IN",  
     };
   };
+
+export const adminStatus = (value) => {
+  return {
+    type: "ADMIN",
+    payload: value,  
+  };
+};
+
+export const changeRenderer = () => {
+  return {
+    type: "CHANGE",
+  };
+};

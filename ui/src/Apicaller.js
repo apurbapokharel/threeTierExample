@@ -25,7 +25,7 @@ export const getReq = async (searchItem) => {
     }
     return new Promise(async (resolve, reject) => {
         const res = await axios.get(changeableUrl);
-        console.log(res);
+        // console.log(res);
         if(res.data){
             if(res.data.length){
                 resolve(res.data);
@@ -44,7 +44,7 @@ export const deleteReq = async (id) => {
     var changeableUrl = `${url}/delete/${id}`;
     try {
         const res = await axios.delete(changeableUrl);
-        console.log(res.data);
+        // console.log(res.data);
         return(res.data);
 
     } catch (error) {
@@ -71,13 +71,13 @@ export const loginReq = (data) => {
     var changeableUrl = `${url}/login`;
     return new Promise(async (resolve, reject) => {
         const res = await axios.post(changeableUrl, data);
-        console.log(res);
+        // console.log(res);
         if(res.data == true){
-            console.log('success');
+            // console.log('success');
             resolve({token: res.headers.token});
             
         }else{
-            console.log("reject");
+            // console.log("reject");
             reject( 'Cannot perform post requset');
         }
     });
@@ -90,18 +90,18 @@ export const registerReq = (data) => {
         const res = await axios.post(changeableUrl, data);
         console.log(res);
         if(res.data == true){
-            console.log('success');
+            // console.log('success');
             resolve( 'Success');
             
         }else{
-            console.log("reject");
+            // console.log("reject");
             reject( 'Cannot perform post requset');
         }
     });
 };
 
 export const validateToken = (token) => {
-    console.log(token);  
+    // console.log(token);  
     var changeableUrl = `${url}/checkValidation`
     return new Promise(async (resolve, reject) => {
         const res = await axios.post(changeableUrl, token);
@@ -112,7 +112,41 @@ export const validateToken = (token) => {
         else if(res.data == "Access Denied"){
             reject("Access Denied");
         }else{
-            resolve({isadmin: res.data.isadmin});
+            resolve({isadmin: res.data.isAdmin});
         }
     });
 };
+
+export const checkAdmin = (token) => {
+    var changeableUrl = `${url}/checkValidation`
+    return new Promise(async (resolve, reject) => {
+        const res = await axios.post(changeableUrl, token);
+        console.log(res);
+        if(res.data == "Invalid or Expired Token"){
+            reject("Invalid or Expired Token");
+        }
+        else if(res.data == "Access Denied"){
+            reject("Access Denied");
+        }else{
+            resolve(res.data.isAdmin);
+        }
+    });
+}
+
+export const makeAdmin = (data) => {
+    console.log(data, data.username, data.isAdmin);
+    var changeableUrl = `${url}/makeAdmin`
+    return new Promise(async (resolve, reject) => {
+        const res = await axios.patch(changeableUrl, data);
+        console.log(res);
+        if(res.data == "No need to update user"){
+            resolve("Success");
+        }
+        else if(res.data == "Username invalid"){
+            reject("Username Invalid");
+        }else{ 
+            resolve("Success");
+        }
+        
+    });
+}
