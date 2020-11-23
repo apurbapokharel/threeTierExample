@@ -16,7 +16,7 @@ function Login() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(loggedStatus);
+        console.log("logged status is",loggedStatus);
     }, []);
 
     const registerUser = () => {
@@ -34,8 +34,8 @@ function Login() {
             event.preventDefault();
             loginReq({"username": username, "password": password})
             .then((token) => {
-                checkAdmin(token).
-                then((isAdmin) => {
+                checkAdmin(token)
+                .then((isAdmin) => {
                   dispatch(adminStatus(isAdmin));
                 })
                 .catch();

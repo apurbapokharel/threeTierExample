@@ -35,10 +35,15 @@ app.get('/', (req,res) => {
 
 
 //CONNECT DB
-mongoose.connect(
-    process.env.connectionURL,
-    { useNewUrlParser: true, useUnifiedTopology: true }, 
-);
+try {
+    mongoose.connect(
+        process.env.connectionURL2,
+        { useNewUrlParser: true, useUnifiedTopology: true }, 
+    );
+} catch (error) {
+    console.log("connection erroe", e);
+}
+
 
 //LISTEN
 app.listen(3000);

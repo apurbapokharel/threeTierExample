@@ -19,14 +19,13 @@ function Crud() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     validateToken(token)
-    //       .catch(() => {
-    //         clearInterval(interval);
-    //         logout();
-    //       })
-    //   },2000);
-    // setIsAdmin(false);
+      const interval = setInterval(() => {
+        validateToken(token)
+          .catch(() => {
+            clearInterval(interval);
+            logout();
+          })
+      },2000);
 }, []);
 
 
@@ -42,14 +41,13 @@ function Crud() {
     <div className="App">
       {!loggedStatus 
       ?
-        window.alert("Access Denied")
+        null
       :
         <header className="App-header">
         <p>CRUD Demonstration</p>
         <Button onClick={logout}><p className="Logoff">Logout</p></Button>
         <br/>
         <div className="Crud">
-          {isAdmin? console.log("ture") : console.log("falsae")}
           {
             isAdmin ?
             <>

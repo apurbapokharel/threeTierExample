@@ -67,7 +67,7 @@ export const patchReq = async (id, body) => {
 };
 
 export const loginReq = (data) => {
-    console.log(data);
+    // console.log(data);
     var changeableUrl = `${url}/login`;
     return new Promise(async (resolve, reject) => {
         const res = await axios.post(changeableUrl, data);
@@ -140,7 +140,7 @@ export const makeAdmin = (data) => {
         const res = await axios.patch(changeableUrl, data);
         console.log(res);
         if(res.data == "No need to update user"){
-            resolve("Success");
+            reject("No need to update user");
         }
         else if(res.data == "Username invalid"){
             reject("Username Invalid");
